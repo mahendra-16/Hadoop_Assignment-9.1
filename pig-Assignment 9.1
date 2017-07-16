@@ -1,0 +1,29 @@
+oil = load '/pigtest/petrol_dataset.txt' using PigStorage(',') as (district_id:chararray, dist_name:chararray, buy_rate:chararray, sell_rate:chararray, vol_in:int, vol_out:int, year:int);
+
+oil_group = GROUP oil BY dist_name;
+dump oil_group;
+
+oil_sold = FOREACH oil_group GENERATE group, SUM(oil.vol_out);
+dump oil_sold;
+
+2)
+ord_oil = ORDER oil BY vol_out DESC;
+limit_oil = LIMIT ord_oil 10;
+grp_oil = GROUP limit_oil BY dist_name;
+tot_oil = FOREACH grp_oil GENERATE group, SUM(limit_oil.vol_out);
+dump tot_oil;
+
+3)
+ordr_oil = ORDER oil BY vol_in DESC;
+lim_oil = LIMIT ordr_oil 10;
+gp_oil = GROUP lim_oil BY district_id;
+for_oil = FOREACH gp_oil GENERATE lim_oil.year, lim_oil.district_id;
+
+4)
+less_oil = ORDER oil BY vol_out DESC;
+oil_for = FOREACH less_oil GENERATE dist_name, vol_out;
+dump oil_for;
+
+
+
+
